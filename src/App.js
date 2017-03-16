@@ -5,6 +5,8 @@ import yaml from 'js-yaml';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import TextField from 'material-ui/TextField';
+import RaisedButton from 'material-ui/RaisedButton';
 import {GridList, GridTile} from 'material-ui/GridList';
 import Graph from './Graph';
 
@@ -22,48 +24,49 @@ class App extends Component {
       errorText: '',
       statePresent: true
     }
-    // this.updateFilename=this.updateFilename.bind(this);
-    // this.showFileName=this.showFileName.bind(this);
-    // this.setFocus=this.setFocus.bind(this);    
+    this.updateFilename=this.updateFilename.bind(this);
+    this.showFileName=this.showFileName.bind(this);
+    this.setFocus=this.setFocus.bind(this);    
   }
-  // twoFunc(e) {
-  //   this.showFileName(e);
-  //   setTimeout(this.setFocus,100);
-  //  //setTimeout(function(){ this.setFocus(); }, 3000);
-  // }
+  twoFunc(e) {
+    this.showFileName(e);
+    setTimeout(this.setFocus,100);
+   //setTimeout(function(){ this.setFocus(); }, 3000);
+  }
 
-  // setFocus() {
-  //   this.refs.editor.getCodeMirror().focus();
-  //   console.log("linecount is"+this.refs.editor.getCodeMirror().lineCount());
-  //   this.refs.editor.getCodeMirror().setCursor(this.refs.editor.getCodeMirror().getValue().split("\n").length, 0);
-  // }
+  setFocus() {
+    this.refs.editor.getCodeMirror().focus();
+    console.log("linecount is"+this.refs.editor.getCodeMirror().lineCount());
+    this.refs.editor.getCodeMirror().setCursor(this.refs.editor.getCodeMirror().getValue().split("\n").length, 0);
+  }
 
-  // updateFilename(e) {
-  //   this.setState({filename:e.target.value});
-  // }
+  updateFilename(e) {
+    this.setState({filename:e.target.value});
+  }
 
-  // showFileName(e) {
-  //   var temp = e.target.files[0];
-  //   var ext = temp.name.split('.').pop().toLowerCase();
-  //   if(ext!="yml")
-  //   {
-  //     alert('Only yml file supported.');
-  //   }
-  //   else {
-  //     var fil = document.getElementById("myFile");
-  //     console.log(fil);
-  //     var that = this;
-  //     this.setState({filename:fil.files[0].name});
-  //     var reader = new FileReader();
-  //     reader.onload = function(event) {
-  //         if(true){
-  //           that.setState({text:event.target.result});
-  //           //that.split();
-  //         }
-  //     };
-  //     reader.readAsText(temp);
-  //   }
-  // }
+  showFileName(e) {
+    var temp = e.target.files[0];
+    var ext = temp.name.split('.').pop().toLowerCase();
+    if(ext!="yml")
+    {
+      alert('Only yml file supported.');
+    }
+    else {
+      var fil = document.getElementById("myFile");
+      console.log(fil);
+      var that = this;
+      this.setState({filename:fil.files[0].name});
+      var reader = new FileReader();
+      reader.onload = function(event) {
+          if(true){
+            that.setState({text:event.target.result});
+            that.handleChange(event.target.result);
+            //that.split();
+          }
+      };
+      reader.readAsText(temp);
+    }
+  }
 
   handleChange = (event) => {
     // try{
@@ -129,7 +132,7 @@ class App extends Component {
                     }
                   }
                   if(flag) {
-                    this.setState({ statePresent: true});
+                    this.setState({ statePresent: true, errorText: ''});
                     // alert('Node is not present');
                     // nodes.push({ name: targets[i]});
                   }
@@ -188,7 +191,7 @@ class App extends Component {
            <div>
                    {this.state.statePresent ? null : <p> { this.state.errorText } </p>}
                    </div>
-     {/*      <div style={{marginLeft:"1%"}}>
+           <div style={{marginLeft:"1%"}}>
             <TextField
                   hintText="Enter File Name"
                   floatingLabelFixed={true}
@@ -203,7 +206,7 @@ class App extends Component {
                   containerElement="label" primary={true}>
                    <input type="file" id="myFile" style={styles.exampleImageInput} onChange={this.twoFunc.bind(this)} />
             </RaisedButton>
-           </div>*/}
+           </div>
         </GridTile>
       <GridTile style={{height:"650px",marginTop:"0%"}}>
         <Graph styles={ styles.graph } nodes={ this.state.nodes } links={ this.state.links } width={ this.props.width } height={ this.props.height } />
