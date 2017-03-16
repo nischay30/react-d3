@@ -75,7 +75,6 @@ class Graph extends Component {
 	}
 
 	render() {
-    console.log(this.props.links)
 		const { width, height } = this.props;
 		const styles = {
       width,

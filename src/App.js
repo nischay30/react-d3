@@ -19,6 +19,7 @@ class App extends Component {
       tempNodeName: [],
       links: [],
       filename:'',
+      errorText: '',
       statePresent: true
     }
     // this.updateFilename=this.updateFilename.bind(this);
@@ -132,12 +133,13 @@ class App extends Component {
                     // alert('Node is not present');
                     // nodes.push({ name: targets[i]});
                   }
-                  else { this.setState({ statePresent: false, errorText: targets[i] }); }
+                  else { this.setState({ statePresent: false, errorText: targets[i].toString() }); }
                 }
               }
             }
           }
         });
+        if((this.state.errorText).length === 0)
         this.setState({ nodes: nodes, links: links});
       }
     }
