@@ -1,34 +1,12 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import * as d3 from 'd3';
 import yaml from 'js-yaml';
-import yamlLint from 'yaml-lint';
+// import yamlLint from 'yaml-lint';
 import CodeMirror from 'react-codemirror';
 import 'codemirror/lib/codemirror.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import RaisedButton from 'material-ui/RaisedButton';
 import {GridList, GridTile} from 'material-ui/GridList';
-import TextField from 'material-ui/TextField';
 import Graph from './Graph';
-
-const nodes = [
-    {
-      "name": "one",
-    },
-    {
-      "name": "two",
-    },
-    {
-      "name": "three"
-    }
-  ]
-
-const links = [
-    {
-      "source": 1,
-      "target": 0
-    }
-  ]
 
 class App extends Component {
   
@@ -37,7 +15,11 @@ class App extends Component {
     this.state={
       text: '',
       textChanged: '',
-      filename:''
+      nodes: [],
+      tempNodeName: [],
+      links: [],
+      filename:'',
+      statePresent: true
     }
     // this.updateFilename=this.updateFilename.bind(this);
     // this.showFileName=this.showFileName.bind(this);
@@ -83,22 +65,82 @@ class App extends Component {
   // }
 
   handleChange = (event) => {
-    try{
-      let a = yaml.loadAll(event, (doc) => {
-        this.setState({textChanged: JSON.stringify(doc, null, 2)});
+    // try{
+      yaml.loadAll(event, (doc) => {
+        this.setState({textChanged: doc});
       });
-      var editor = this.refs.editor.getCodeMirror();
-        console.log(editor);
-        editor.markText({line: 1, ch: 26}, {line: 1, ch: 42}, {className: "styled-background"});
-    }
-    catch(err){
-    console.log("message is "+ err.message);
+    // }
+/*    catch(err){
+    // console.log("message is "+ err.message);
       var startindex=err.message.indexOf("at line") + 8;
         var endindex=err.message.indexOf("column")-2;
         var errrow=err.message.substring(startindex,endindex);
-        console.log(errrow);
-    }
+        // console.log(errrow);
+    }*/
       this.setState({ text:event});
+      this.forceUpdate(this.createJSON);
+  }
+
+
+  createJSON() {
+    let jsonData = this.state.textChanged;
+    let nodes = [];
+    let links = [];
+    if(jsonData instanceof Object) {
+      if(jsonData['stages']) {
+        const stages = Object.keys(jsonData['stages']);
+        stages.map((stageName) => {
+          if(jsonData['stages'][stageName] instanceof Object) {
+            let tempFlag = false;
+            for(let j = 0; j< nodes.length; j++) {
+              if(nodes[j]['name'].trim() === stageName.trim()) {
+                tempFlag = true;
+              }
+            }
+            if(!tempFlag) {
+              nodes.push({ name: stageName});
+            }
+            if(jsonData['stages'][stageName]['depends_on']) {
+              const targets = jsonData['stages'][stageName]["depends_on"];
+              for(let i = 0; i< targets.length; i++ ){
+                if(targets[i]) {
+                  let flag = false;
+                  let linkFlag = false;
+                  let sourceIndex = null;
+                  let targetIndex = null;
+                  for(let j = 0; j< nodes.length; j++) {
+                    // To find the source index
+                    if(nodes[j]['name'].trim() === stageName && !sourceIndex) {
+                      sourceIndex = j;
+                    }
+                    // To find the target index
+                    if(nodes[j]['name'].trim() === targets[i].trim() && !targetIndex) {
+                      targetIndex = j;
+                    }
+
+                    if(nodes[j]['name'].trim() === targets[i].trim()) {
+                      flag = true;
+                    }
+
+                    if(sourceIndex != null && targetIndex!= null && !linkFlag) {
+                      linkFlag = true;
+                      links.push({ source: sourceIndex, target: targetIndex});
+                    }
+                  }
+                  if(flag) {
+                    this.setState({ statePresent: true});
+                    // alert('Node is not present');
+                    // nodes.push({ name: targets[i]});
+                  }
+                  else { this.setState({ statePresent: false, errorText: targets[i] }); }
+                }
+              }
+            }
+          }
+        });
+        this.setState({ nodes: nodes, links: links});
+      }
+    }
   }
 
   render() { 
@@ -141,6 +183,9 @@ class App extends Component {
           <CodeMirror ref="editor" onChange={this.handleChange.bind(this)} value={this.state.text}  options={options} />
           <textarea type='textarea' rows={45} cols={80} value={ this.state.textChanged } style={{'display':'none'}}/>
            </div>
+           <div>
+                   {this.state.statePresent ? null : <p> { this.state.errorText } </p>}
+                   </div>
      {/*      <div style={{marginLeft:"1%"}}>
             <TextField
                   hintText="Enter File Name"
@@ -159,9 +204,10 @@ class App extends Component {
            </div>*/}
         </GridTile>
       <GridTile style={{height:"650px",marginTop:"0%"}}>
-        <Graph styles={ styles.graph } nodes={ nodes } links={ links } width={ this.props.width } height={ this.props.height } />
+        <Graph styles={ styles.graph } nodes={ this.state.nodes } links={ this.state.links } width={ this.props.width } height={ this.props.height } />
          </GridTile>
          </GridList>
+
            </MuiThemeProvider>
       </div>
     );

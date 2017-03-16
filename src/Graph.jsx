@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import * as d3 from 'd3';
 
 class Graph extends Component {
-	componentDidMount() {
-
+	graph = () => {
     const { width, height } = this.props;
 	  d3.selectAll("svg").remove();
     let svg=d3.select(this.refs.mountPoint).append('svg')
@@ -27,7 +26,7 @@ class Graph extends Component {
    let force = d3.layout.force()
       .size([width, height]) 
       .nodes(d3.values(this.props.nodes))
-      .links(this.props.links)
+      .links(d3.values(this.props.links))
       .linkDistance(300)
       .charge(function(d) {
                 -Math.pow(d.radius*5.0, 2.0) / 1
@@ -50,7 +49,7 @@ class Graph extends Component {
       .append('g')
       .classed('gnode', true);
         
-    let node = gnodes.append("circle")
+    gnodes.append("circle")
       .attr('class', 'node')
       .attr('r', width * 0.07)
       .style('stroke', '#fff')
@@ -58,8 +57,8 @@ class Graph extends Component {
       .attr('text-anchor', 'middle')
       .style('fill','#ccc');
 
-    let labels = gnodes.append("text")
-      .text(function(d) { console.log(d.name); return d.name; })
+    gnodes.append("text")
+      .text(function(d) { return d.name; })
       .style("fill", "#555")
       .style("font-family", "Arial")
       .style("font-size", 12);
@@ -76,6 +75,7 @@ class Graph extends Component {
 	}
 
 	render() {
+    console.log(this.props.links)
 		const { width, height } = this.props;
 		const styles = {
       width,
@@ -84,7 +84,12 @@ class Graph extends Component {
       position: 'fix',
       border: '1px solid #323232',
   	};
-	   return <div style={this.props.style} ref="mountPoint" />;
+
+	   return (
+        <div style={ styles } ref="mountPoint" >
+        { this.graph() }
+        </div>
+      );
   }
 }
 
