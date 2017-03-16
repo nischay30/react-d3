@@ -1,0 +1,140 @@
+{
+  "nodes": [
+    {
+      "name": "one",
+      "group": 1
+    },
+    {
+      "name": "two",
+      "group": 2
+    },
+    {
+      "name": "three",
+      "group": 2
+    },
+    {
+      "name": "four",
+      "group": 3
+    },
+    {
+      "name": "five",
+      "group": 4
+    },
+    {
+      "name": "six",
+      "group": 5
+    },
+    {
+      "name": "seven",
+      "group": 5
+    },
+    {
+      "name": "eight",
+      "group": 5
+    },
+    {
+      "name": "nine",
+      "group": 8
+    },
+    {
+      "name": "ten",
+      "group": 8
+    },
+    {
+      "name": "eleven",
+      "group": 8
+    },
+    {
+      "name": "twelve",
+      "group": 9
+    },
+    {
+      "name": "thirteen",
+      "group": 4
+    },
+    {
+      "name": "fourteen",
+      "group": 4
+    },
+    {
+      "name": "fiveteen",
+      "group": 4
+    },
+    {
+      "name": "sixteen",
+      "group": 4
+    },
+    {
+      "name": "seventeen",
+      "group": 5
+    },
+    {
+      "name": "eighteen",
+      "group": 10
+    },
+    {
+      "name": "nineteen",
+      "group": 10
+    },
+    {
+      "name": "twenty",
+      "group": 4
+    },
+    {
+      "name": "twentyone",
+      "group": 8
+    }
+  ],
+  "links": [
+    {
+      "source": 1,
+      "target": 0,
+      "value": 1
+    },
+    {
+      "source": 2,
+      "target": 0,
+      "value": 8
+    },
+    {
+      "source": 3,
+      "target": 0,
+      "value": 10
+    },
+    {
+      "source": 3,
+      "target": 2,
+      "value": 6
+    },
+    {
+      "source": 4,
+      "target": 0,
+      "value": 1
+    },
+    {
+      "source": 5,
+      "target": 0,
+      "value": 1
+    },
+    {
+      "source": 6,
+      "target": 0,
+      "value": 1
+    },
+    {
+      "source": 7,
+      "target": 0,
+      "value": 1
+    },
+    {
+      "source": 8,
+      "target": 0,
+      "value": 2
+    },
+    {
+      "source": 9,
+      "target": 0,
+      "value": 1
+    }
+  ]
+}
