@@ -10,8 +10,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import {GridList, GridTile} from 'material-ui/GridList';
 import Graph from './Graph';
 
-class App extends Component {
-  
+class App extends Component {  
   constructor(props) {
     super(props);
     this.state={
@@ -69,19 +68,21 @@ class App extends Component {
   }
 
   handleChange = (event) => {
-    // try{
+   if(!event) { this.setState({textChanged: '', errorText: ''});}
+     try{
       yaml.loadAll(event, (doc) => {
-        this.setState({textChanged: doc});
+        this.setState({textChanged: doc, errorText: ''});
       });
-    // }
-/*    catch(err){
-    // console.log("message is "+ err.message);
+     }
+    catch(err){
+     console.log("message is "+ err.message);
+     this.setState({errorText:err.message});
       var startindex=err.message.indexOf("at line") + 8;
         var endindex=err.message.indexOf("column")-2;
         var errrow=err.message.substring(startindex,endindex);
         // console.log(errrow);
-    }*/
-      this.setState({ text:event});
+    }
+      this.setState({ text:event});      
       this.forceUpdate(this.createJSON);
   }
 
@@ -133,20 +134,24 @@ class App extends Component {
                   }
                   if(flag) {
                     this.setState({ statePresent: true, errorText: ''});
-                    // alert('Node is not present');
                     // nodes.push({ name: targets[i]});
                   }
                   else { this.setState({ statePresent: false, errorText: targets[i].toString() }); }
+                }
+                else {
+                  this.setState({ statePresent: true, errorText: ''});
                 }
               }
             }
           }
         });
-        if((this.state.errorText).length === 0)
         this.setState({ nodes: nodes, links: links});
       }
     }
+  else {
+      this.setState({ nodes: [], links: [], statePresent: true});  
   }
+}
 
   render() { 
     var options = {
@@ -178,6 +183,9 @@ class App extends Component {
       width: '100%',
       opacity: 0,
    },
+    errorStyle: {
+      color: 'red',
+    },
 };
     return (
       <div className="App">
@@ -189,8 +197,10 @@ class App extends Component {
           <textarea type='textarea' rows={45} cols={80} value={ this.state.textChanged } style={{'display':'none'}}/>
            </div>
            <div>
-                   {this.state.statePresent ? null : <p> { this.state.errorText } </p>}
+           <br/>
+          {this.state.statePresent ? <textarea type='textarea' rows={3} cols={72} style={{'resize':'none'}} value={this.state.errorText} id='text_area'/> : <textarea type='textarea' rows={3} cols={72} style={{'resize':'none'}} value={"Warning: "+this.state.errorText+" is not present"} id='text_area1'/>}
                    </div>
+                   <br/>
            <div style={{marginLeft:"1%"}}>
             <TextField
                   hintText="Enter File Name"
@@ -220,4 +230,3 @@ class App extends Component {
 }
 
 export default App;
-
